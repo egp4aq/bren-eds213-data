@@ -80,3 +80,39 @@ SELECT Nest_ID, ANY_VALUE(Observer) AS Observer, COUNT(*) As Num_eggs
     USING (Nest_ID)
     WHERE Nest_ID LIKE '13B%'
     GROUP BY Nest_ID;
+
+-- Views: a virtual table
+CREATE VIEW my_nests AS
+    SELECT Nest_ID, ANY_VALUE(Observer) AS Observer, COUNT(*) As Num_eggs
+     FROM Bird_nests JOIN Bird_eggs
+     USING (Nest_ID)
+     WHERE Nest_ID LIKE '13B%'
+     GROUP BY Nest_ID;
+
+.tables
+SELECT * FROM my_nests;
+SELECT Nest_ID, Name, Num_eggs
+    FROM my_nests JOIN Personnel
+    ON Observer = Abbreviation;
+
+-- view: always virtual 
+-- temp table
+-- what's the difference??
+
+-- What about modifications (inserts, updates, deletes) on a view? Possible?
+-- it depends: where it's theoretically possible, how smart the database is
+
+-- set operations
+-- UNION, UNION ALL, INTERSECT, EXCEPT
+-- mathematically a table is a set of tuples, so you can do set operations on them 
+-- here is an example, but it sounds like it's not super realistic?
+SELECT * FROM Bird_eggs LIMIT 5;
+
+SELECT Book_page, Year, Site, Nest_ID, Egg_num, Length*25.4 AS Length, Width*25.4 AS Width
+    FROM Bird_eggs
+    WHERE Book_page LIKE 'b14%'
+UNION 
+SELECT Book_page, Year, Site, Nest_ID, Egg_num, Length, Width
+    FROM Bird_eggs
+    WHERE Book_page NOT LIKE 'b14%';
+-- in this example, only page b14 got messed up because the length and width are in mm and not inches or whatever the conversion is. so we selected and converted only that page and then stuck it back together. 
