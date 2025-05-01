@@ -1,0 +1,29 @@
+---
+title: "hw4-missing-data"
+format: html
+author: Liz Peterson
+date: 4-30-2025
+---
+
+```{sql}
+-- Using a Code NOT IN (subquery clause)
+SELECT Code FROM Site
+    WHERE Code NOT IN (SELECT DISTINCT Site FROM Bird_eggs)
+    ORDER BY Code;
+```
+
+```{sql}
+-- Using an outer join with a WHERE clause
+SELECT Code FROM Site FULL OUTER JOIN Bird_eggs
+    ON Code = Site 
+    WHERE Egg_num IS NULL
+    ORDER BY Code; 
+```
+
+```{sql}
+-- Using the set operation EXCEPT
+SELECT Code FROM Site
+    EXCEPT 
+    SELECT DISTINCT Site FROM Bird_eggs
+    ORDER BY Code;
+```
