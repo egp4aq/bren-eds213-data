@@ -50,9 +50,15 @@ INSERT INTO Bird_eggs
 SELECT * FROM Bird_eggs WHERE Nest_ID = 'hehe';
 ```
 
+```{sql}
+-- drop trigger before updating it to avoid problems
+DROP TRIGGER egg_filler;
+```
+
 ## Part 2: Update trigger
 
 ```{sql}
+
 CREATE TRIGGER egg_filler
 AFTER INSERT ON Bird_eggs
 FOR EACH ROW
@@ -65,19 +71,29 @@ BEGIN
     ),
     Book_page = (
         SELECT Book_page FROM Bird_eggs 
-        WHERE Nest_ID = NEW.Nest_ID AND Egg_num IS NOT NULL LIMIT 1;
+        WHERE Nest_ID = NEW.Nest_ID AND Egg_num IS NOT NULL LIMIT 1
     ),
     Year = (
         SELECT Year FROM Bird_eggs 
-        WHERE Nest_ID = NEW.Nest_ID AND Egg_num IS NOT NULL LIMIT 1;
+        WHERE Nest_ID = NEW.Nest_ID AND Egg_num IS NOT NULL LIMIT 1
     ),
     Site = (
         SELECT Site FROM Bird_eggs 
-        WHERE Nest_ID = NEW.Nest_ID AND Egg_num IS NOT NULL LIMIT 1;
+        WHERE Nest_ID = NEW.Nest_ID AND Egg_num IS NOT NULL LIMIT 1
     )
     -- which should I use here???
-    -- WHERE Nest_ID = new.Nest_ID AND Egg_num IS NULL;
-    -- WHERE rowid = NEW.rowid 
+    WHERE Nest_ID = new.Nest_ID AND Egg_num IS NULL;
+    -- WHERE rowid = NEW.rowid;
 
 END;
+```
+
+
+```{sql}
+-- Test the insert
+INSERT INTO Bird_eggs
+    (Nest_ID, Length, Width)
+    VALUES ('14eabaage01', 12.34, 56.78);
+
+SELECT * FROM Bird_eggs;
 ```
