@@ -1,0 +1,28 @@
+---
+title: "hw3-problem3"
+format: html
+author: Liz Peterson
+date: 4-22-2025
+---
+
+```{sql}
+-- Create temporary table to compute averages
+CREATE TEMP TABLE Averages AS
+    SELECT Nest_ID, AVG((3.14/6)*(Width^2*Length)) AS Avg_volume
+        FROM Bird_eggs
+        GROUP BY Nest_ID;
+```
+
+```{sql}
+-- Create temporary table to select the maximum average volumes
+CREATE TEMP TABLE inter AS
+    SELECT Species, MAX(Avg_volume) AS Max_avg_volume
+    FROM Bird_nests JOIN Averages USING (Nest_ID)
+    GROUP BY Species;
+```
+
+```{sql}
+FROM inter JOIN Species ON Species.code = inter.Species
+    SELECT Max_avg_volume, Scientific_name
+    ORDER BY Max_volume DESC;
+```

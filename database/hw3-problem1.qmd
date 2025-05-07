@@ -1,0 +1,39 @@
+---
+title: "hw3-problem1.qmd"
+format: html
+author: Liz Peterson
+date: 4-22-2025
+---
+
+### Part 1
+
+```{sql}
+-- Create temp table with column of type REAL
+CREATE TEMP TABLE mytable (
+    col REAL
+);
+
+-- Insert values into table with one NULL value
+INSERT INTO mytable (col)
+    VALUES
+        (3), (5), (NULL), (2),(1);
+
+-- Take the average of that column
+SELECT AVG(col) FROM mytable;
+```
+
+The average value was calculated by completely ignoring the NULL value. The average is calculated as if there were only 4 values, i.e. (3+5+2+1)/4. However, if it did account for the null value, it would calculate the average like (3+5+0+2+1)/5, which would give us a lower value of 2.2 as opposed to the 2.75 that we got. 
+
+### Part 2
+
+```{sql}
+SELECT SUM(col)/COUNT(*) FROM mytable;
+SELECT SUM(col)/COUNT(col) FROM mytable;
+```
+
+The second query (SELECT SUM(col)/COUNT(col) FROM mytable;) gives us the correct average, while the first query (SELECT SUM(col)/COUNT(*) FROM mytable;) gives us the lower, incorrect average. This makes sense, seeing as the first COUNT(*) chooses all of the entries from table, but COUNT(col) does not account for the NULL value. 
+
+```{sql}
+-- Drop table
+DROP TABLE mytable;
+```

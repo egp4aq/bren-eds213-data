@@ -1,0 +1,35 @@
+---
+title: "hw3-problem2"
+format: html
+author: Liz Peterson
+date: 4-22-2025
+---
+
+### Part 1
+
+```{sql}
+SELECT Site_name, AVG(Area) FROM Site;
+SELECT Site_name, COUNT(*) FROM Site;
+SELECT Site_name, SUM(Area) FROM Site;
+
+-- The error that we get from these queries: Binder Error: column "Site_name" must appear in the GROUP BY clause or must be part of an aggregate function. Either add it to the GROUP BY list, or use "ANY_VALUE(Site_name)" if the exact value of "Site_name" is not important.
+
+SELECT ANY_VALUE(Site_name), SUM(Area) FROM Site;
+```
+
+We know that the exact name of site is not important becuase we are looking for an aggregate function on all sites. For example, in the `SELECT Site_name, SUM(Area) FROM Site;` query, we are trying to see the sum of area in all Site_names in the Site table, which means the Site_name itself is irrelevant. When we run `SELECT ANY_VALUE(Site_name), SUM(Area) FROM Site;`, which is what the error suggested, we get the correct output for the math part, but we get Barrow as the Site_name. It seems like SQL just chose the first site name in the list that it aggregated over. 
+
+### Part 2
+
+```{sql}
+SELECT Site_name, Area FROM Site
+    ORDER BY Area DESC
+    LIMIT 1;
+```
+
+### Part 3
+
+```{sql}
+SELECT Site_name, Area FROM Site
+    WHERE Area = (SELECT MAX(Area) FROM Site);
+```

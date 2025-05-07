@@ -1,0 +1,118 @@
+-- Continuing with SQL
+-- somewhat arbitrary but illustrative query
+SELECT Species, COUNT(*) AS Nest_count FROM Bird_nests
+    WHERE Site = 'nome'
+    GROUP BY Species
+    HAVING Nest_count > 10
+    ORDER BY Species
+    LIMIT 2;
+
+-- we can nest queries
+SELECT Scientific_name, Nest_count FROM
+    (SELECT Species, COUNT(*) AS Nest_count FROM Bird_nests
+        WHERE Site = 'nome'
+        GROUP BY Species
+        HAVING Nest_count > 10
+        ORDER BY Species
+        LIMIT 2) JOIN Species
+        ON Species = Code;
+
+-- Outer joins
+CREATE TEMP TABLE a (
+    cola INTEGER,
+    common INTEGER
+);
+INSERT INTO a VALUES (1,1), (2,2), (3,3);
+SELECT * FROM a;
+CREATE TEMP TABLE b (
+    common INTEGER,
+    colb INTEGER
+);
+INSERT INTO b VALUES (1,1), (2,2), (3,3), (4,4), (5,5);
+SELECT * FROM b;
+
+-- The joins that we've been doing so far have been "inner" joins
+SELECT * FROM a JOIN b USING (common);
+SELECT * FROM a JOIN b on a.common = b.common;
+
+-- By doing an "outer" join -- either a "left" or a "right" join -- we'll add certain missing rows
+SELECT * FROM a LEFT JOIN b ON a.common = b.common;
+SELECT * FROM a RIGHT JOIN b ON a.common = b.common;
+
+-- A running example: What species do *not* have any nest data?
+SELECT COUNT(*) FROM Species;
+SELECT COUNT(DISTINCT Species) FROM Bird_nests;
+SELECT Code FROM Species
+    WHERE Code NOT IN (SELECT DISTINCT Species FROM Bird_nests); -- gives the names of all 80 species that are not in bird_nests
+
+SELECT Code FROM Species
+    WHERE Code NOT IN (SELECT Species FROM Bird_nests); -- This gives us the same answer as the query above, but it is not as efficient 
+
+-- method 2: using an outer join
+SELECT Code, Species FROM Species LEFT JOIN Bird_nests
+    ON Code = Species 
+    WHERE Species IS NULL; -- i.e. only give me those where there is no match
+
+-- It's also possible to join a table with itself, a so-called "self-join"
+
+-- Understanding a limitation of DuckDB
+SELECT Nest_ID, COUNT(*) AS Num_eggs
+    FROM Bird_nests JOIN Bird_eggs
+    USING (Nest_ID)
+    WHERE Nest_ID LIKE '13B%'
+    GROUP BY Nest_ID;
+
+-- Let's add in Observer
+SELECT Nest_ID, Observer, COUNT(*) AS Num_eggs
+    FROM Bird_nests JOIN Bird_eggs
+    USING (Nest_ID)
+    WHERE Nest_ID LIKE '13B%'
+    GROUP BY Nest_ID;
+
+SELECT * FROM Bird_nests JOIN Bird_eggs
+    USING (Nest_ID)
+    WHERE Nest_ID LIKE '13B%'; -- here we are grouping by the primary key, so know that there will only be one value for observer in that first group because we are grouping by the primary key
+
+
+-- DuckDB solution #2
+SELECT Nest_ID, ANY_VALUE(Observer) AS Observer, COUNT(*) As Num_eggs
+    FROM Bird_nests JOIN Bird_eggs
+    USING (Nest_ID)
+    WHERE Nest_ID LIKE '13B%'
+    GROUP BY Nest_ID;
+
+-- Views: a virtual table
+CREATE VIEW my_nests AS
+    SELECT Nest_ID, ANY_VALUE(Observer) AS Observer, COUNT(*) As Num_eggs
+     FROM Bird_nests JOIN Bird_eggs
+     USING (Nest_ID)
+     WHERE Nest_ID LIKE '13B%'
+     GROUP BY Nest_ID;
+
+.tables
+SELECT * FROM my_nests;
+SELECT Nest_ID, Name, Num_eggs
+    FROM my_nests JOIN Personnel
+    ON Observer = Abbreviation;
+
+-- view: always virtual 
+-- temp table
+-- what's the difference??
+
+-- What about modifications (inserts, updates, deletes) on a view? Possible?
+-- it depends: where it's theoretically possible, how smart the database is
+
+-- set operations
+-- UNION, UNION ALL, INTERSECT, EXCEPT
+-- mathematically a table is a set of tuples, so you can do set operations on them 
+-- here is an example, but it sounds like it's not super realistic?
+SELECT * FROM Bird_eggs LIMIT 5;
+
+SELECT Book_page, Year, Site, Nest_ID, Egg_num, Length*25.4 AS Length, Width*25.4 AS Width
+    FROM Bird_eggs
+    WHERE Book_page LIKE 'b14%'
+UNION 
+SELECT Book_page, Year, Site, Nest_ID, Egg_num, Length, Width
+    FROM Bird_eggs
+    WHERE Book_page NOT LIKE 'b14%';
+-- in this example, only page b14 got messed up because the length and width are in mm and not inches or whatever the conversion is. so we selected and converted only that page and then stuck it back together. 

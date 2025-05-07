@@ -1,0 +1,24 @@
+---
+title: "hw4-culprit"
+format: html
+author: Liz Peterson
+date: 5-1-2025
+---
+
+```{sql}
+-- Bird_eggs table has the number of eggs, year, and site 
+-- Bird_nests table can join with the Bird_eggs via Nest_ID. From this join we can get observer code from Bird_nests 
+-- Personnel table has Abbreviation column which can be joined to Observer column from Bird_nests and from there we can extract the actual name of the observer
+-- to get the correct person, we need someone who was in nome between 1998 and 2008 and whose method for determining age was float
+```
+
+```{sql}
+SELECT Personnel.Name, COUNT(Bird_nests.Nest_ID) AS Num_floated_nests
+  FROM Bird_nests JOIN Personnel ON Bird_nests.Observer = Personnel.Abbreviation
+  WHERE Bird_nests.Site = 'nome'
+    AND Bird_nests.Year BETWEEN 1998 AND 2008
+    AND Bird_nests.ageMethod = 'float'
+    AND Bird_nests.Observer IS NOT NULL
+  GROUP BY Personnel.Name
+  HAVING COUNT(Bird_nests.Nest_ID) = 36;
+```
