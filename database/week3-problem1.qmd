@@ -1,0 +1,11 @@
+---
+title: "week3-problem1"
+format: html
+author: Liz Peterson
+date: 04-22-2025
+---
+
+```{sql}
+
+```
+
