@@ -1,0 +1,66 @@
+---
+title: "data-modeling"
+format: html
+editor_options: 
+  chunk_output_type: console
+author: Liz Peterson
+date: 4-9-25
+---
+
+```{r}
+library(tidyverse)
+library(here)
+```
+
+```{r}
+snow_survey <- read.csv(here('ASDN_csv','ASDN_Snow_survey.csv'))
+site <- read.csv(here('ASDN_csv','site.csv'))
+species <- read.csv(here('ASDN_csv','species.csv'))
+color_band_code <- read.csv(here('ASDN_csv','color_band_code.csv'))
+personnel <- read.csv(here('ASDN_csv','personnel.csv'))
+```
+
+```{r}
+glimpse(snow_survey)
+glimpse(site)
+glimpse(species)
+glimpse(color_band_code)
+glimpse(personnel)
+```
+
+
+```{sql}
+CREATE TABLE Place (
+    Code TEXT PRIMARY KEY,
+    Location TEXT,
+    Plot TEXT,
+    Site TEXT
+);
+
+CREATE TABLE Observers (
+    ID INTEGER PRIMARY KEY
+    Observer TEXT UNIQUE
+);
+
+CREATE TABLE Survey (
+    Survey TEXT PRIMARY KEY,
+    Year INTEGER NOT NULL,
+    Date DATE NOT NULL
+    Plot TEXT NOT NULL,
+    Snow_cover REAL CHECK (Snow_cover BETWEEN 0 and 100),
+    Water_cover REAL CHECK (Water_cover BETWEEN 0 and 100),
+    Land_cover REAL CHECK (Land_cover BETWEEN 0 and 100),
+    Total_cover INTEGER CHECK (Total_cover = 100),
+    Notes TEXT
+    Observer_ID INTEGER
+    Site_ID TEXT
+);
+
+CREATE TABLE Personnel (
+    Abbreviation TEXT PRIMARY KEY,
+    Name TEXT NOT NULL UNIQUE
+    Observer_ID INTEGER
+);
+```
+
+I am definitely interested in discussing the assignment further in class - I mostly just tried to incorporate as many variables as possible from each csv. I knew that I wanted to make sure that the cover values were within the ranges we defined in class, and specifically that the Total cover was equal to 100. I wanted to connect the personnel and observers tables, as well as the Place and the Survey tables. 

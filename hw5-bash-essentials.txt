@@ -1,0 +1,79 @@
+1. Compare the output of these three commands:
+
+ls
+ls .
+ls "$(pwd)/../ASDN_csv"
+
+Explain why you see what you see.
+
+All of these are the same. They all print out all of the files within the subdirectory.
+
+2. Try the following two commands:
+
+wc -l *.csv
+cat *.csv | wc -l
+
+The first prints filenames and line counts. The second prints a bare number. Why does it print that number, and why does it not print any filenames?
+
+The second prints out the total number of lines in the whole subdirectory, adding together the amount of lines in each file. The first command shows the number of lines and each filename in the subdirectory. The reason for this difference lies in the cat command, which tells bash to concatenate each file. 
+
+3. You want to count the total number of lines in all CSV files and try this command:
+
+cat *.csv | wc -l species.csv
+
+What happens and why?
+
+It only gives you the number of lines in species.csv because for some reason the command specified species.csv after the wc -l. So that only gave them that specific file. 
+
+4. You’re given
+
+name=Moe
+
+and you’d like to print “Moe_Howard”. You try this:
+
+echo "$name_Howard"
+
+but that doesn’t quite work. What fix can you apply to $name, while keeping it inside the quotation marks, to make this command give the desired effect?
+
+echo "${name}_Howard" --> just add curly braces around name!
+
+5. You create a script and run it like so:
+
+bash myscript.sh *.csv
+
+What are the values of variables $1 and $#? Explain why the script does not see just one argument passed to it.
+
+There are two arguments passed in, the first shell file that we are apparently creating, and then all of the csv files in the current subdirectory. So $1 is the first argument, which ends up being the new bash file, myscript.sh, and $# is the second argument which is the wildcard for all csv files in the subdirectory. 
+
+6. You create a script and run it like so:
+
+bash myscript.sh "$(date)" $(date)
+
+In your script, what is the value of variable $3?
+
+The value of $3 would be the Month, because it is parsing through the date object, and the second component of that is the month. You might think it should be $2, but it's $3 because $1 is the whole entire date string.
+
+7. Create a file you don’t care about (because you’re about to destroy it):
+
+echo "yo ho a line of text" > junk_file.txt
+echo "another line" >> junk_file.txt
+
+You want to sort the lines in this file, so you try:
+
+sort junk_file.txt
+
+Well that prints the lines in sorted order, but it doesn’t actually change the file. You recall section 7 and try:
+
+sort junk_file.txt > junk_file.txt
+
+What happens and why? How can you sort the lines in your file? (Hint: it involves creating a second file and using mv.)
+
+All forms of > are destructive: Bash overwrites any existing file with an empty file before the program is run. Therefore, when you try to assign that back to junk_file.txt, it is assigning that empty file. Instead, you can assign the sort junk_file.txt to an intermediate file called something different and then assign that file to junk_file.txt.
+
+8. You want to delete all files ending in .csv, so you type (don’t actually try this):
+
+rm * .csv
+
+but as can be seen, your thumb accidentally hit the space bar and you got an extra space in there. What will rm do in this case?
+
+Because there is a space in between * and .csv, bash is commanded to delete all files in the subdirectory, rather than just all the files with the .csv extension. So it will delete all the files in the subdirectory! 
