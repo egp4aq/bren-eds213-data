@@ -1,0 +1,13 @@
+HW 5: Little Bobby Tables
+Author: Liz Peterson
+5-15-25
+
+Part one:
+His name would cause a catastrophe for his school if he was entered in as a student to the student database. After his name there is a `';`. 
+This would make the table expect the next student after that semi-colon. However, the next part of his name is the command DROP TABLE Students; which would effectively drop the rest of the student body table. The two dashes then comment out the rest of whatever comes next - likely the next student entries in the database. 
+
+Part two: 
+Even if the query were changed to use `name = '%s'`, the semi-colon tactic would still work for Bobby. For example, he could keep his name as Bobby; DROP TABLE Students;--, and the `name = '%s'` would pick up on Bobby; as his name and the rest of the query as a new entry. Therefore, that DROP TABLE Students;-- command would still effectively drop the rest of the student body table. 
+
+Bonus problem:
+`wolv'; INSERT INTO Personnel (name) VALUES ('Taylor Swift');--`
