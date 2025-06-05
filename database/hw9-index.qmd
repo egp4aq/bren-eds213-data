@@ -1,0 +1,118 @@
+---
+title: "Week 9 - What makes a good index?"
+format: html
+---
+
+For this assignment, we will be using this file: `big-fat.sqlite3` and this query: 
+
+```{sql}
+SELECT Nest_ID
+    FROM Bird_nests
+    WHERE Site = 'nome' AND
+          Species = 'ruff' AND
+          Year = 1983 AND
+          Observer = 'cbishop' AND
+          ageMethod = 'float';
+```
+
+## Part 1:
+
+Is there already an index on the Bird_nests table? If so, what is that index and will SQLite use it in the above query? Why or why not?
+
+We know that the primary key for the Bird_nests table is Nest_ID, which has a unique identifier for each row in the table. Therefore, it would make sense that this would be the index for the table. Because Nest_ID is included in the SELECT clause, I do think it would be used in the query above. If it was not included in any of the SELECT or WHERE statements, I don't think it would be included. But it is here. 
+
+Will adding an index on a column not mentioned in the WHERE clause be used by the database? Why or why not?
+
+The database would not use any indexes that are not mentioned in the WHERE clause because it has no need for it. The use of the index is to allow for faster searching and filtering, so if a column isn't mentioned in the WHERE statement, the index wouldn't be used. 
+
+## Part 2:
+
+Experiment 1: no added index
+
+```{sql}
+
+```
+
+Experiment 2: Added index for Site
+
+```{sql}
+
+```
+
+Experiment 3: Added index for Species
+
+```{sql}
+
+```
+
+Experiment 4: Added index for Year
+
+```{sql}
+
+```
+
+Experiment 5: Added index for Observer
+
+```{sql}
+
+```
+
+Experiment 6: Added index for ageMethod
+
+```{sql}
+
+```
+
+Experiment 7: Added index for Site, Species
+
+```{sql}
+
+```
+
+Experiment 8: Added index for Site, Species
+
+```{sql}
+
+```
+
+Experiment 9: Added index for Site, Species
+
+```{sql}
+
+```
+
+Experiment 10: Added index for Site, Species
+
+```{sql}
+
+```
+
+Experiment 11: Added index for Site, Species
+
+```{sql}
+
+```
+
+Experiment 12: Added index for Site, Species
+
+```{sql}
+
+```
+
+Experiment 13: Added index for Site, Species
+
+```{sql}
+
+```
+
+Experiment 14: Added index for Site, Species
+
+```{sql}
+
+```
+
+Experiment 15: Added index for Site, Species
+
+```{sql}
+
+```
