@@ -30,7 +30,20 @@ The database would not use any indexes that are not mentioned in the WHERE claus
 Experiment 1: no added index
 
 ```{sql}
+-- Drop previous index if needed
+DROP INDEX IF EXISTS idx_site;
 
+-- Create index
+CREATE INDEX idx_site ON Bird_nests(Site);
+
+-- Count distinct values in the indexed column
+SELECT COUNT(DISTINCT Site) AS num_distinct_site FROM Bird_nests;
+
+
+bash hw5-test-harness.sh subquery 10 "SELECT Nest_ID FROM Bird_nests WHERE Site = 'nome' AND Species = 'ruff' AND Year = 1983 AND Observer = 'cbishop' AND ageMethod = 'float';" big-fat.sqlite3 index_results.csv
+
+-- Drop the index
+duckdb big-fat.duckdb "DROP INDEX idx_site;";
 ```
 
 Experiment 2: Added index for Site
@@ -69,50 +82,56 @@ Experiment 7: Added index for Site, Species
 
 ```
 
-Experiment 8: Added index for Site, Species
+Experiment 8: Added index for Site, Observer
 
 ```{sql}
 
 ```
 
-Experiment 9: Added index for Site, Species
+Experiment 9: Added index for Species, Observer
 
 ```{sql}
 
 ```
 
-Experiment 10: Added index for Site, Species
+Experiment 10: Added index for Year, Observer
 
 ```{sql}
 
 ```
 
-Experiment 11: Added index for Site, Species
+Experiment 11: Added index for Observer, ageMethod
 
 ```{sql}
 
 ```
 
-Experiment 12: Added index for Site, Species
+Experiment 12: Added index for Site, Species, Observer
 
 ```{sql}
 
 ```
 
-Experiment 13: Added index for Site, Species
+Experiment 13: Added index for Site, Year, Observer
 
 ```{sql}
 
 ```
 
-Experiment 14: Added index for Site, Species
+Experiment 14: Added index for Species, ageMethod, Year, Observer
 
 ```{sql}
 
 ```
 
-Experiment 15: Added index for Site, Species
+Experiment 15: Added index for Species, ageMethod, Year
 
 ```{sql}
 
 ```
+
+### Final Questions:
+
+What relationship do you observe? Hypothesize why you see the relationship you do
+
+What conclusion do you draw regarding what makes a good index?
